@@ -1,10 +1,10 @@
-# **\<center\> PADA-Coder: Improving Plan-Following Code Generation via Perturbation-Verified Attention Distillation and Dynamic Alignment\</center\>**
+# **<center> PADA-Coder: Improving Plan-Following Code Generation via Perturbation-Verified Attention Distillation and Dynamic Alignment</center>**
 
 This repository contains the code, data, and models for "PADA-Coder: Improving Plan-Following Code Generation via Perturbation-Verified Attention Distillation and Dynamic Alignment."
 
 🔗 **GitHub**: [https://anonymous.4open.science/r/PADA-Coder](https://anonymous.4open.science/r/PADA-Coder)
 
-📜 **Paper**: [Coming Soon](https://www.google.com/search?q) | 📊 **Benchmark**: [APPS, HumanEval, MBPP+, LiveCodeBench](https://www.google.com/search?q) | 🤖 **Models**: [PADA-Qwen2.5-7B, PADA-Llama3.2-3B](https://www.google.com/search?q)
+📜 **Paper**: [Added later]() | 📊 **Benchmark**: [APPS, HumanEval, MBPP+, LiveCodeBench]() | 🤖 **Models**: [Added later]()
 
 **📢 Notice: Ongoing Maintenance**:
 
@@ -48,162 +48,167 @@ We conduct extensive experiments on the following datasets mentioned in the pape
 
 ## **Getting Started**
 
-\<span id='all\_catalogue'/\>
+<span id='all\_catalogue'/>
 
 ### **Table of Contents:**
 
-* \<a href='\#Environment Preparation'\>1. Environment Preparation \</a\>  
-* \<a href='\#Data Collection'\>2. Data Collection (Plan & Code) \</a\>  
-  * \<a href='\#Launch vLLM Server'\>2.1 Launch vLLM Server  
-  * \<a href='\#Run Data Generation'\>2.2 Run Data Generation  
-* \<a href='\#Attention Extraction'\>3. Attention Extraction \</a\>  
-* \<a href='\#Dual-Gating Metrics'\>4. Dual-Gating System Metrics \</a\>  
-* \<a href='\#Perturbation Analysis'\>5. Perturbation Analysis \</a\>  
-* \<a href='\#Training'\>6. Dynamic Attention Alignment Training \</a\>
+* <a href='\#Environment Preparation'>1. Environment Preparation </a>  
+* <a href='\#Data Collection'>2. Data Collection (Plan & Code) </a>  
+  * <a href='\#Launch vLLM Server'>2.1 Launch vLLM Server  
+  * <a href='\#Run Data Generation'>2.2 Run Data Generation  
+* <a href='\#Attention Extraction'>3. Attention Extraction </a>  
+* <a href='\#Dual-Gating Metrics'>4. Dual-Gating System Metrics </a>  
+* <a href='\#Perturbation Analysis'>5. Perturbation Analysis </a>  
+* <a href='\#Training'>6. Dynamic Attention Alignment Training </a>
 
-\<span id='Environment Preparation'/\>
+<span id='Environment Preparation'/>
 
-### **1\. Environment Preparation \<a href='\#all\_catalogue'\>\[Back to Top\]\</a\>**
+### **1\. Environment Preparation <a href='\#all\_catalogue'>\[Back to Top\]</a>**
 
 Please first clone the repo and install the required environment, which can be done by running the following commands:
 ```shell
-conda create \-n PADA python=3.10
+conda create -n PADA python=3.10
 
 conda activate PADA
 
-\# Install requirements  
-python \-m pip install \-r requirements.txt
+# Install requirements  
+python -m pip install -r requirements.txt
 ```
-\<span id='Data Collection'/\>
+<span id='Data Collection'>
 
-### **2\. Data Collection (Plan & Code) \<a href='\#all\_catalogue'\>\[Back to Top\]\</a\>**
+### **2\. Data Collection (Plan & Code) <a href='\#all\_catalogue'>\[Back to Top\]</a>**
 
 For open-source models, we use the OpenAI compatible server based on vLLM. Please refer [OpenAI-Compatible Server](https://docs.vllm.ai/en/latest/getting_started/quickstart.html#openai-compatible-server) for detailed instructions to setup the local servers.
 
-\<span id='Launch vLLM Server'/\>
+<span id='Launch vLLM Server'>
 
-#### **2.1 Launch vLLM Server \<a href='\#all\_catalogue'\>\[Back to Top\]\</a\>**
+#### **2.1 Launch vLLM Server <a href='\#all\_catalogue'>\[Back to Top\]</a>**
 ```shell
-CUDA\_VISIBLE\_DEVICES=0 python \-m vllm.entrypoints.openai.api\_server \\  
-    \--model /path/to/Qwen3-32B \\  
-    \--served-model-name Qwen3-32B \\  
-    \--port 8000 \\  
-    \--max-model-len 18000 \\  
-    \--trust-remote-code
+CUDA_VISIBLE_DEVICES=0 python -m vllm.entrypoints.openai.api_server \
+    --model /path/to/Qwen3-32B \
+    --served-model-name Qwen3-32B \
+    --port 8000 \
+    --max-model-len 18000 \
+    --trust-remote-code
 ```
-\<span id='Run Data Generation'/\>
+<span id='Run Data Generation'/>
 
-#### **2.2 Run Data Generation \<a href='\#all\_catalogue'\>\[Back to Top\]\</a\>**
+#### **2.2 Run Data Generation <a href='\#all\_catalogue'>\[Back to Top\]</a>**
 ```shell
-cd ./data\_collect/programming
+cd ./data_collect/programming
 
-python generate\_data.py \\  
-    \--root\_dir ../output\_data/APPS/Qwen3-32B/ \\  
-    \--name initial\_experiment \\  
-    \--dataset\_path ../input\_data/APPS/dataset/train.jsonl \\  
-    \--testfile ../input\_data/APPS/dataset/train.jsonl \\  
-    \--strategy "plan\_then\_code" \\  
-    \--model Qwen3-32B \\  
-    \--max\_iters 5 \\  
-    \--port 8000
+python generate_data.py \
+    --root_dir ../output_data/APPS/Qwen3-32B/ \
+    --name initial_experiment \
+    --dataset_path ../input_data/APPS/dataset/train.jsonl \
+    --testfile ../input_data/APPS/dataset/train.jsonl \
+    --strategy "plan_then_code" \
+    --model Qwen3-32B \
+    --max_iters 5 \
+    --port 8000
 ```
 **Available options for** \--dataset\_path: HumanEval, MBPP, HumanEval-ET, MBPP-ET, LiveCode, APPS, CodeContests.
 
-\<span id='Attention Extraction'/\>
+<span id='Attention Extraction'/>
 
-### **3\. Attention Extraction \<a href='\#all\_catalogue'\>\[Back to Top\]\</a\>**
+### **3\. Attention Extraction <a href='\#all\_catalogue'>\[Back to Top\]</a>**
 
 Extract attention matrices from Teacher and Student models to identify raw key tokens.
 ```shell
-cd data\_prepare
+cd data_prepare
 
-python attkeyword.py \\  
-    \--model\_path "$MODEL\_DIR" \\  
-    \--input\_file "$INPUT\_DATA" \\  
-    \--output\_file "$OUTPUT\_FILE" \\  
-    \--top\_k\_ratio $TOP\_K \\  
-    \--max\_score\_threshold $THRESHOLD \\  
-    \--window\_size $WINDOW \\  
-    \--target\_layer\_start $START\_LAYER
+python attkeyword.py \
+    --model_path "$MODEL_DIR" \
+    --input_file "$INPUT_DATA" \
+    --output_file "$OUTPUT_FILE" \
+    --top_k_ratio $TOP_K \
+    --max_score_threshold $THRESHOLD \
+    --window_size $WINDOW \
+    --target_layer_start $START_LAYER
 ```
-\<span id='Dual-Gating Metrics'/\>
+<span id='Dual-Gating Metrics'/>
 
-### **4\. Dual-Gating System Metrics \<a href='\#all\_catalogue'\>\[Back to Top\]\</a\>**
+### **4\. Dual-Gating System Metrics <a href='\#all\_catalogue'>\[Back to Top\]</a>**
 
 Calculate metrics required for the **Difficulty-Aware Gating Mechanism**.
 
 #### **Calculate Model Perplexity (Uncertainty)**
 ```shell
-cd data\_prepare
+cd data_prepare
 
-python calculate\_uncertainty.py \\  
-    \--model\_path "$MODEL\_PATH" \\  
-    \--input\_file "$INPUT\_DATA" \\  
-    \--output\_file "$OUTPUT\_DATA" \\  
-    \--device\_map "auto"
+python calculate_uncertainty.py \
+    --model_path "$MODEL_PATH" \
+    --input_file "$INPUT_DATA" \
+    --output_file "$OUTPUT_DATA" \
+    --device_map "auto"
+
 ```
 #### **Calculate Structural Complexity (AST)**
 ```shell
-python AST\_difficulty.py \\  
-    \--input\_file "$INPUT\_FILE" \\  
-    \--output\_file "$OUTPUT\_FILE"
-```
-\<span id='Perturbation Analysis'/\>
+python AST_difficulty.py \
+    --input_file "$INPUT_FILE" \
+    --output_file "$OUTPUT_FILE"
 
-### **5\. Perturbation Analysis \<a href='\#all\_catalogue'\>\[Back to Top\]\</a\>**
+```
+<span id='Perturbation Analysis'/>
+
+### **5\. Perturbation Analysis <a href='\#all\_catalogue'>\[Back to Top\]</a>**
 
 Construct the final **Maximum-DID Matrix** by filtering tokens based on ![][image1]PPL.
 ```shell
-python Perturbation.py \\  
-    \--teacher\_file "$TEACHER\_JSONL" \\  
-    \--student\_file "$STUDENT\_JSONL" \\  
-    \--output\_file "$OUTPUT\_FILE" \\  
-    \--eval\_model\_path "$EVAL\_MODEL" \\  
-    \--k\_ratio $K\_RATIO \\  
-    \--rho\_min $RHO\_MIN \\  
-    \--rho\_max $RHO\_MAX
-```
-\<span id='Training'/\>
+python Perturbation.py \
+    --teacher_file "$TEACHER_JSONL" \
+    --student_file "$STUDENT_JSONL" \
+    --output_file "$OUTPUT_FILE" \
+    --eval_model_path "$EVAL_MODEL" \
+    --k_ratio $K_RATIO \
+    --rho_min $RHO_MIN \
+    --rho_max $RHO_MAX
 
-### **6\. Dynamic Attention Alignment Training \<a href='\#all\_catalogue'\>\[Back to Top\]\</a\>**
+```
+<span id='Training'/>
+
+### **6\. Dynamic Attention Alignment Training <a href='\#all\_catalogue'>\[Back to Top\]</a>**
 
 Train the student model using the PADA objective.
 
 #### **For Llama-3.2-3B**
 ```shell
-python train\_llama.py \\  
-    \--model\_path "$MODEL\_PATH" \\  
-    \--data\_path "$DATA\_PATH" \\  
-    \--output\_dir "$OUTPUT\_DIR" \\  
-    \--batch\_size $BATCH\_SIZE \\  
-    \--grad\_accum $GRAD\_ACCUM \\  
-    \--lr $LR \\  
-    \--epochs $EPOCHS \\  
-    \--target\_layers\_start $TARGET\_LAYER\_START \\  
-    \--target\_layers\_end $TARGET\_LAYER\_END \\  
-    \--target\_heads "$TARGET\_HEADS" \\  
-    \--attn\_loss\_start $ATTN\_LOSS\_START \\  
-    \--attn\_loss\_end $ATTN\_LOSS\_END \\  
-    \--alpha\_mu $ALPHA\_MU \\  
-    \--alpha\_tau $ALPHA\_TAU \\  
-    \--complexity\_scale $COMPLEXITY\_SCALE
+python train_llama.py \
+    --model_path "$MODEL_PATH" \
+    --data_path "$DATA_PATH" \
+    --output_dir "$OUTPUT_DIR" \
+    --batch_size $BATCH_SIZE \
+    --grad_accum $GRAD_ACCUM \
+    --lr $LR \
+    --epochs $EPOCHS \
+    --target_layers_start $TARGET_LAYER_START \
+    --target_layers_end $TARGET_LAYER_END \
+    --target_heads "$TARGET_HEADS" \
+    --attn_loss_start $ATTN_LOSS_START \
+    --attn_loss_end $ATTN_LOSS_END \
+    --alpha_mu $ALPHA_MU \
+    --alpha_tau $ALPHA_TAU \
+    --complexity_scale $COMPLEXITY_SCALE
+
 ```
 #### **For Qwen3 / Qwen2.5**
 ```shell
-python train\_qwen.py \\  
-    \--model\_path "$MODEL\_PATH" \\  
-    \--data\_path "$DATA\_PATH" \\  
-    \--output\_dir "$OUTPUT\_DIR" \\  
-    \--batch\_size $BATCH\_SIZE \\  
-    \--grad\_accum $GRAD\_ACCUM \\  
-    \--lr $LR \\  
-    \--epochs $EPOCHS \\  
-    \--target\_layers\_start $TARGET\_LAYER\_START \\  
-    \--target\_layers\_end $TARGET\_LAYER\_END \\  
-    \--target\_heads "$TARGET\_HEADS" \\  
-    \--attn\_loss\_start $ATTN\_LOSS\_START \\  
-    \--attn\_loss\_end $ATTN\_LOSS\_END \\  
-    \--alpha\_mu $ALPHA\_MU \\  
-    \--alpha\_tau $ALPHA\_TAU \\  
-    \--complexity\_scale $COMPLEXITY\_SCALE
+python train_llama.py \
+    --model_path "$MODEL_PATH" \
+    --data_path "$DATA_PATH" \
+    --output_dir "$OUTPUT_DIR" \
+    --batch_size $BATCH_SIZE \
+    --grad_accum $GRAD_ACCUM \
+    --lr $LR \
+    --epochs $EPOCHS \
+    --target_layers_start $TARGET_LAYER_START \
+    --target_layers_end $TARGET_LAYER_END \
+    --target_heads "$TARGET_HEADS" \
+    --attn_loss_start $ATTN_LOSS_START \
+    --attn_loss_end $ATTN_LOSS_END \
+    --alpha_mu $ALPHA_MU \
+    --alpha_tau $ALPHA_TAU \
+    --complexity_scale $COMPLEXITY_SCALE
+
 ```
