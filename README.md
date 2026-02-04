@@ -66,14 +66,14 @@ We conduct extensive experiments on the following datasets mentioned in the pape
 ### **1\. Environment Preparation \<a href='\#all\_catalogue'\>\[Back to Top\]\</a\>**
 
 Please first clone the repo and install the required environment, which can be done by running the following commands:
-
+```shell
 conda create \-n PADA python=3.10
 
 conda activate PADA
 
 \# Install requirements  
 python \-m pip install \-r requirements.txt
-
+```
 \<span id='Data Collection'/\>
 
 ### **2\. Data Collection (Plan & Code) \<a href='\#all\_catalogue'\>\[Back to Top\]\</a\>**
@@ -83,18 +83,18 @@ For open-source models, we use the OpenAI compatible server based on vLLM. Pleas
 \<span id='Launch vLLM Server'/\>
 
 #### **2.1 Launch vLLM Server \<a href='\#all\_catalogue'\>\[Back to Top\]\</a\>**
-
+```shell
 CUDA\_VISIBLE\_DEVICES=0 python \-m vllm.entrypoints.openai.api\_server \\  
     \--model /path/to/Qwen3-32B \\  
     \--served-model-name Qwen3-32B \\  
     \--port 8000 \\  
     \--max-model-len 18000 \\  
     \--trust-remote-code
-
+```
 \<span id='Run Data Generation'/\>
 
 #### **2.2 Run Data Generation \<a href='\#all\_catalogue'\>\[Back to Top\]\</a\>**
-
+```shell
 cd ./data\_collect/programming
 
 python generate\_data.py \\  
@@ -106,7 +106,7 @@ python generate\_data.py \\
     \--model Qwen3-32B \\  
     \--max\_iters 5 \\  
     \--port 8000
-
+```
 **Available options for** \--dataset\_path: HumanEval, MBPP, HumanEval-ET, MBPP-ET, LiveCode, APPS, CodeContests.
 
 \<span id='Attention Extraction'/\>
@@ -114,7 +114,7 @@ python generate\_data.py \\
 ### **3\. Attention Extraction \<a href='\#all\_catalogue'\>\[Back to Top\]\</a\>**
 
 Extract attention matrices from Teacher and Student models to identify raw key tokens.
-
+```shell
 cd data\_prepare
 
 python attkeyword.py \\  
@@ -125,7 +125,7 @@ python attkeyword.py \\
     \--max\_score\_threshold $THRESHOLD \\  
     \--window\_size $WINDOW \\  
     \--target\_layer\_start $START\_LAYER
-
+```
 \<span id='Dual-Gating Metrics'/\>
 
 ### **4\. Dual-Gating System Metrics \<a href='\#all\_catalogue'\>\[Back to Top\]\</a\>**
@@ -133,7 +133,7 @@ python attkeyword.py \\
 Calculate metrics required for the **Difficulty-Aware Gating Mechanism**.
 
 #### **Calculate Model Perplexity (Uncertainty)**
-
+```shell
 cd data\_prepare
 
 python calculate\_uncertainty.py \\  
@@ -141,19 +141,19 @@ python calculate\_uncertainty.py \\
     \--input\_file "$INPUT\_DATA" \\  
     \--output\_file "$OUTPUT\_DATA" \\  
     \--device\_map "auto"
-
+```
 #### **Calculate Structural Complexity (AST)**
-
+```shell
 python AST\_difficulty.py \\  
     \--input\_file "$INPUT\_FILE" \\  
     \--output\_file "$OUTPUT\_FILE"
-
+```
 \<span id='Perturbation Analysis'/\>
 
 ### **5\. Perturbation Analysis \<a href='\#all\_catalogue'\>\[Back to Top\]\</a\>**
 
 Construct the final **Maximum-DID Matrix** by filtering tokens based on ![][image1]PPL.
-
+```shell
 python Perturbation.py \\  
     \--teacher\_file "$TEACHER\_JSONL" \\  
     \--student\_file "$STUDENT\_JSONL" \\  
@@ -162,7 +162,7 @@ python Perturbation.py \\
     \--k\_ratio $K\_RATIO \\  
     \--rho\_min $RHO\_MIN \\  
     \--rho\_max $RHO\_MAX
-
+```
 \<span id='Training'/\>
 
 ### **6\. Dynamic Attention Alignment Training \<a href='\#all\_catalogue'\>\[Back to Top\]\</a\>**
@@ -170,7 +170,7 @@ python Perturbation.py \\
 Train the student model using the PADA objective.
 
 #### **For Llama-3.2-3B**
-
+```shell
 python train\_llama.py \\  
     \--model\_path "$MODEL\_PATH" \\  
     \--data\_path "$DATA\_PATH" \\  
@@ -187,9 +187,9 @@ python train\_llama.py \\
     \--alpha\_mu $ALPHA\_MU \\  
     \--alpha\_tau $ALPHA\_TAU \\  
     \--complexity\_scale $COMPLEXITY\_SCALE
-
+```
 #### **For Qwen3 / Qwen2.5**
-
+```shell
 python train\_qwen.py \\  
     \--model\_path "$MODEL\_PATH" \\  
     \--data\_path "$DATA\_PATH" \\  
@@ -206,3 +206,4 @@ python train\_qwen.py \\
     \--alpha\_mu $ALPHA\_MU \\  
     \--alpha\_tau $ALPHA\_TAU \\  
     \--complexity\_scale $COMPLEXITY\_SCALE
+```
