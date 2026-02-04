@@ -52,7 +52,7 @@ We conduct extensive experiments on the following datasets mentioned in the pape
 Our entire work flow can be summarized as follows:
 
 <div align="center">
-<img src="pics\main.jpg" width="800px">
+<img src="pics\main.png" width="800px">
 </div>
 
 **Overview of PADA:** Our framework comprises three steps:(1) **Attention Extraction:** we extract the attention matrices from both teacher and student models corresponding to correct and erroneous outputs, followed by Code-wise Aggregation to derive importance vectors. (2) **Construction of Maximum DID Matrix via Perturbation Analysis:** Based on DID, we get $k$, $\eta$ and $\tau$. the top-k key tokens are selected and categorized into consensus, divergence, and Distractors based on the ranked attention scores. The consensus and divergence undergo perturbation analysis to yield the key tokens set $K_{pos}$, while the Distractors are processed via neg-only sampling to obtain the $K_{neg}$. Then we construct the Maximum-DID Attention Target Matrix with these sets. (3) **Dynamic Attention Alignment training:** The student model updates its attention matrix via a sliding window and gating mechanism to align with the target matrix, thereby enhancing generation accuracy.
@@ -188,7 +188,7 @@ Train the student model using the PADA objective.
 #### **For Llama-3.2-3B**
 ```shell
 cd train
-python train_llama.py \
+python train_Llama.py \
     --model_path "$MODEL_PATH" \
     --data_path "$DATA_PATH" \
     --output_dir "$OUTPUT_DIR" \
@@ -209,7 +209,7 @@ python train_llama.py \
 #### **For Qwen3 / Qwen2.5**
 ```shell
 cd train
-python train_llama.py \
+python train_Qwen.py \
     --model_path "$MODEL_PATH" \
     --data_path "$DATA_PATH" \
     --output_dir "$OUTPUT_DIR" \
